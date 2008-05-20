@@ -1,0 +1,24 @@
+ManyHelpers
+===========
+
+Given a has_many :through relationship between Author and Book models, with AuthorBook as the join model -
+
+Methods:
+
+author_books=
+  handles existing associations
+
+new_author_books=
+  setter method for accepting new join records
+
+authorbook
+  after_save method for new join records
+
+
+Example
+=======
+
+Example goes here.
+
+
+Copyright (c) 2008 michael r. bernstein, michaelrbernstein@gmail.com, released under the MIT license
