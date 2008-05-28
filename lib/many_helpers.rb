@@ -20,9 +20,38 @@ module ManyHelpers
                   fs.destroy
                 end
               end
-              self.#{first.to_s}_#{second.to_s.pluralize}.update(hash_or_values.keys, hash_or_values.values)
+              
+              self.#{first.to_s}_#{second.to_s.pluralize}.update(hash_or_values.keys, hash_or_values.values)                
             when Array
               self.#{first.to_s}_#{second.to_s.pluralize}_association = hash_or_values
+            end
+          end
+          
+          def auto_#{first.to_s}_#{second.to_s.pluralize}=(hash_or_values)
+            return unless hash_or_values
+            case hash_or_values
+            when Hash
+              self.#{first.to_s}_#{second.to_s.pluralize}.each do |fs|
+              unless hash_or_values.keys.include?(fs.id.to_s)
+                hash_or_values.delete(fs.id.to_s)
+                fs.destroy
+              end
+             end
+             
+             asoc = hash_or_values.values[0].keys[0].split("_")[0].capitalize.constantize
+             a = {hash_or_values.values[0].keys[0] => asoc.find_by_name(hash_or_values.values[0].values[0]).id}
+             self.#{first.to_s}_#{second.to_s.pluralize}.update(hash_or_values.keys, [a])
+             
+            when Array
+              self.#{first.to_s}_#{second.to_s.pluralize}_association = hash_or_values
+            end
+          end
+          
+          #setter method for new #{first.to_s}_#{second.to_s.pluralize} with autocomplete
+          def new_autocomplete_#{first.to_s}_#{second.to_s.pluralize}=(nac)
+            @#{first.to_s}#{second.to_s.pluralize} = []
+            nac.each do |na|
+              @#{first.to_s}#{second.to_s.pluralize} << #{association_name.to_s.camelize}.new(na[0] => eval(na[0].split("_")[0].capitalize).find_by_name(na[1]).id, (self.class.name.downcase+"_id").to_sym =>self.id)
             end
           end
           
