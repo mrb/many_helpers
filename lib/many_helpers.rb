@@ -51,7 +51,10 @@ module ManyHelpers
           def new_autocomplete_#{first.to_s}_#{second.to_s.pluralize}=(nac)
             @#{first.to_s}#{second.to_s.pluralize} = []
             nac.each do |na|
-              @#{first.to_s}#{second.to_s.pluralize} << #{association_name.to_s.camelize}.new(na[0] => eval(na[0].split("_")[0].capitalize).find_by_name(na[1]).id, (self.class.name.downcase+"_id").to_sym =>self.id)
+              self.save
+              unless eval(na[0].split("_")[0].capitalize).find_by_name(na[1]).nil?
+                @#{first.to_s}#{second.to_s.pluralize} << #{association_name.to_s.camelize}.new(na[0] => eval(na[0].split("_")[0].capitalize).find_by_name(na[1]).id, (self.class.name.downcase+"_id").to_sym =>self.id)
+              end
             end
           end
           
@@ -59,6 +62,7 @@ module ManyHelpers
           def new_#{first.to_s}_#{second.to_s.pluralize}=(abs)
             @#{first.to_s}#{second.to_s.pluralize} = []
             abs.each do |ab|
+              self.save
               @#{first.to_s}#{second.to_s.pluralize} << #{association_name.to_s.camelize}.new(ab[0]=>ab[1], (self.class.name.downcase+"_id").to_sym =>self.id)
             end
           end
