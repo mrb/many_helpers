@@ -61,7 +61,7 @@ module ManyHelpers
           #setter method for new #{first.to_s}_#{second.to_s.pluralize}
           def new_#{first.to_s}_#{second.to_s.pluralize}=(abs)
             @#{first.to_s}#{second.to_s.pluralize} = []
-            
+            self.save
             abs.each do |ab|
               ab[(self.class.name.downcase+"_id").to_sym] = self.id
               @#{first.to_s}#{second.to_s.pluralize} << #{association_name.to_s.camelize}.new(ab)
