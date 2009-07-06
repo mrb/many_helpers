@@ -14,13 +14,12 @@ module ManyHelpers
             return unless hash_or_values
             case hash_or_values
             when Hash
-              self.#{first.to_s}_#{second.to_s.pluralize}.each do |fs|
-                unless hash_or_values.keys.include?(fs.id.to_s)
-                  hash_or_values.delete(fs.id.to_s)
-                  fs.destroy
-                end
-              end
-              
+              #self.#{first.to_s}_#{second.to_s.pluralize}.each do |fs|
+              #  unless hash_or_values.keys.include?(fs.id.to_s)
+              #    hash_or_values.delete(fs.id.to_s)
+              #    #fs.destroy
+              #  end
+              #end
               self.#{first.to_s}_#{second.to_s.pluralize}.update(hash_or_values.keys, hash_or_values.values)                
             when Array
               self.#{first.to_s}_#{second.to_s.pluralize}_association = hash_or_values
@@ -60,6 +59,7 @@ module ManyHelpers
           
           #setter method for new #{first.to_s}_#{second.to_s.pluralize}
           def new_#{first.to_s}_#{second.to_s.pluralize}=(abs)
+            return unless abs && abs.respond_to?(:each)
             @#{first.to_s}#{second.to_s.pluralize} = []
             self.save
             abs.each do |ab|
@@ -70,6 +70,7 @@ module ManyHelpers
           
           #after_save
           def #{first.to_s}#{second.to_s}
+            
             return unless @#{first.to_s}#{second.to_s.pluralize}
             @#{first.to_s}#{second.to_s.pluralize}.each do |t|
               t.save
